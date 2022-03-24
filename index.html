@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Sudoku</title>
+</head>
+
+<body>
+	<style>
+
+		body {
+			background-color: #546197;
+			margin:0;
+		}
+
+		@media only screen and (min-width: 980px) {
+			body {
+				background-color: #222222;
+			}
+		}
+
+		#sudoku-app {
+			width: 100%;
+			text-align: center;
+			height: 646px;
+			background: #546197;
+		}
+
+		@media only screen and (max-width: 400px) {
+			#sudoku-app {
+				width: 562px;
+			}
+		}
+
+		#sudoku-app > h1 {
+			width: 100%;
+			background-color: #546197;
+			text-align: center;
+			margin: 0;
+			padding-top: 16px;
+		}
+
+		@media only screen and (min-width: 980px) {
+			#sudoku-app > h1 {
+				width: 562px;
+				margin-left: 4%;
+			}
+		}
+
+		#sudoku-wrapper {
+			text-align: left;
+			margin: auto;
+			width: 561px;
+			border: 1px solid #747474;
+			border-top: 2px solid #747474;
+			border-left: 2px solid #747474;
+		}
+
+		@media only screen and (min-width: 980px) {
+			#sudoku-wrapper {
+				float: left;
+				margin-left: 4%;
+			}
+		}
+
+		.sudoku-grid {
+			width: 186px;
+			display: inline-block;
+			border-bottom: 1px solid #747474;
+			border-right: 1px solid #747474;
+		}
+
+		.sudoku-grid.selected {
+			border-bottom: 1px solid black;
+			border-right: 1px solid black;
+		}
+
+		.sudoku-grid>div.sudoku-box {
+			width: 60px;
+			height: 60px;
+			border: 1px solid #747474;
+			display: inline-block;
+			background-color: #ebebeb;
+			user-select: none;
+		}
+
+		.sudoku-grid>div.failed {
+			background-color: red;
+		}
+
+		.sudoku-grid>div.loading {
+			/* background-color: #c0c0c0; */
+		}
+
+		.sudoku-grid>div>div {
+			padding: 3px;
+			line-height: 10px;
+		}
+
+		#new-game-wrapper button {
+			margin-top: 16px;
+		}
+
+		.sudoku-box > div {
+			position: relative;
+		}
+
+		.sudoku-guesses {
+			width: 42px;
+    		height: 48px;
+			position: absolute;
+			margin-left: 9px;
+			top: 9px;
+		}
+
+		.sudoku-guesses > div {
+			float: left;
+			font-size: 14px;
+			width: 10px;
+			padding: 4px 1px 1px 2px;
+			color: #d0d1e9;
+			user-select: none;
+		}
+
+		.sudoku-guesses > div.guessing {
+			color: #3c3e86;
+			font-weight: bold;
+		}
+
+		.btn-guess {
+			position: absolute;
+			background-color: #d4dcff;
+			width: 10px;
+			height: 10px;
+			top: 0;
+			left: 0;
+		}
+
+		.sudoku-box .available {
+			width: 32px;
+			line-height: 9px;
+    		float: left;
+		}
+
+		.sudoku-box .available span {
+			display: inline-block;
+			color: #d35b5b;
+			font-size: 11px;
+			padding-right: 3px;
+		}
+
+		.sudoku-box .none-available {
+			display: inline-block;
+			height: 32px;
+		}
+
+		.box_id {
+			font-size: 15px;
+			margin-bottom: 7px;
+			display: block;
+			font-weight: bold;
+		}
+
+		.sudoku-grid>div.sudoku-box.highlight.selected {
+			background-color: aqua;
+		}
+
+		.sudoku-grid>div.sudoku-box.highlight.is-peer-grid {
+			background-color: #d0ffff;
+		}
+
+		.sudoku-grid>div.sudoku-box.highlight.is-peer-row {
+			background-color: #ffe1d0;
+		}
+
+		.sudoku-grid>div.sudoku-box.highlight.is-peer-row.is-peer-grid {
+			background-color: #daedca;
+		}
+
+		.sudoku-grid>div.sudoku-box.highlight.is-peer-column {
+			background-color: #efc3e4;
+		}
+
+		.sudoku-grid>div.sudoku-box.highlight.is-peer-column.is-peer-grid {
+			background-color: #ccc0e1;
+		}
+
+		.answer, .guess {
+			position: absolute;
+			font-size: 24px;
+			font-weight: bold;
+			margin: 6px 0 0 20px;
+			user-select: none;
+		}
+
+		.guess {
+			color: #ff3131;
+		}
+
+		#dashboard {
+			background-color: #546197;
+			width: 100%;
+
+		}
+
+		@media only screen and (min-width: 980px) {
+			#dashboard {
+				height: 562px;
+				width: 350px;
+				float: left;
+			}
+		}
+
+		#info-box-wrapper {
+			margin-top: 24px;
+			text-align: left;
+			padding-left: 32px;
+			padding-right: 32px;
+		}
+
+		@media only screen and (min-width: 980px) {
+			#info-box-wrapper {
+				padding-right: 0;
+			}
+		}
+
+		#info-box {
+			background-color: #adb3cf;
+			padding: 12px;
+		}
+
+		#did-i-win {
+			text-align: center;
+		}
+
+		#did-i-win h1 {
+			margin: 10px 0 0;
+		}
+
+		#did-i-win h4 {
+			margin: 0 0 10px 0;
+		}
+
+
+	</style>
+
+	<script type="importmap">
+	  {
+	    "imports": {
+	      "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+	    }
+	  }
+	</script>
+
+	<div id="sudoku-app" @keyup="available">
+
+		<h1>Sudoku</h1>
+
+		<sudoku @selectedBox="selectedBox"></sudoku>
+
+	</div>
+
+	<script type="module">
+		import { createApp } from 'vue'
+		import Sudoku from './js/sudoku.js?v=202203221923'
+		import SudokuGrid from './js/sudoku-grid.js?v=202203221923'
+		import SudokuBox from './js/sudoku-box.js?v=202203221923'
+		import SudokuGuesses from './js/sudoku-guesses.js?v=202203221923'
+		import SudokuGuessBox from './js/sudoku-guess-box.js?v=202203221923'
+
+		const app = createApp({
+			data() {
+				return {
+
+				}
+			},
+			methods: {}
+		})
+
+		app
+			.component('SudokuGuessBox', SudokuGuessBox)
+			.component('SudokuGuesses', SudokuGuesses)
+			.component('SudokuBox', SudokuBox)
+			.component('SudokuGrid', SudokuGrid)
+			.component('Sudoku', Sudoku).mount('#sudoku-app')
+	</script>
+</body>
+
+</html>
