@@ -598,5 +598,7 @@ export default {
 				</div>
 			</div>
 		</div>
+
+		<div id="github"><a href="https://github.com/stillatmylinux/sudoku">github.com/stillatmylinux/sudoku</a></div>
 `
 }
