@@ -16,6 +16,7 @@ export default {
 			box_id: '',
 			guess: 0,
 			show_guesses: false,
+			choosen_guesses: [],
 		}
 	},
 	methods: {
@@ -103,7 +104,25 @@ export default {
 		toggleGuesses() {
 			if(!this.state.boxes[this.box_id].show) {
 				this.show_guesses = !this.show_guesses
+
+				if(!this.show_guesses && this.choosen_guesses.length == 1) {
+					this.state.boxes[this.box_id].guess = this.choosen_guesses[0]
+
+					this.$emit('selectedBox', {
+						id: this.box_id,
+						row: this.row,
+						column: this.column,
+						grid: this.grid,
+						button: true,
+					})
+				}
 			}
+		},
+		guessChosen(choosen_guesses) {
+			this.choosen_guesses = []
+			choosen_guesses.forEach(choosen_guess => {
+				this.choosen_guesses.push(choosen_guess)
+			})
 		}
 	},
 	mounted() {
@@ -133,7 +152,7 @@ export default {
 				<div v-if="!show_guesses" class="guess">
 					{{ state.boxes[box_id]?.guess ? state.boxes[box_id]?.guess : '' }}
 				</div>
-				<sudoku-guesses v-if="!state.boxes[box_id]?.show && show_guesses" :state="state"></sudoku-guesses>
+				<sudoku-guesses v-if="!state.boxes[box_id]?.show && show_guesses" @closeGuesses="closeGuesses" @guessChosen="guessChosen" :state="state"></sudoku-guesses>
 			</div>
 		</div>
 `

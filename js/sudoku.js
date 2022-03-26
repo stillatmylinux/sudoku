@@ -351,7 +351,6 @@ export default {
 
 			// Test grids
 			for (const grid in this.grids) {
-				console.log('Grid ', this.grids[grid])
 				unique_box_values = []
 				for(const box_id in this.state.boxes) {
 					if (this.state.boxes[box_id].grid == this.grids[grid]) {
